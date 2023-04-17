@@ -19,7 +19,7 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
- class VigenereCipheringMachine {
+/*class VigenereCipheringMachine {
   encrypt() {
     throw new NotImplementedError('Not implemented');
     // remove line with error and write your code here
@@ -28,6 +28,67 @@ const { NotImplementedError } = require('../extensions/index.js');
     throw new NotImplementedError('Not implemented');
     // remove line with error and write your code here
   }
+} */
+
+class VigenereCipheringMachine {
+  alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  constructor(type=true) {
+    this.type = type;
+  }
+  
+  encrypt(message, key) {
+    if (!message || !key) {
+      throw Error('Incorrect arguments!');
+    }
+    let encryptMessage = message.toUpperCase();
+    let counter = -1;
+
+    key = key.toUpperCase();
+
+    encryptMessage = encryptMessage.split('').map(e => {
+      if (this.alphabet.includes(e)) {
+        counter++;
+        return this.alphabet[(this.alphabet.indexOf(e) + this.alphabet.indexOf(key[counter % key.length]))
+        % this.alphabet.length];
+      } else {
+        return e;
+      }
+    }).join('')
+
+    if(!this.type) {
+      return encryptMessage.split('').reverse().join('')
+    } else {
+      return encryptMessage;
+    }
+  } 
+  
+  decrypt(encryptMessage, key) {
+    if (!encryptMessage || !key) {
+      throw Error('Incorrect arguments!');
+    }
+
+    let decryptMessage = encryptMessage;
+    let counter = -1;
+
+    key = key.toUpperCase();
+
+    decryptMessage = decryptMessage.split('').map(e => {
+      if (this.alphabet.includes(e)) {
+        counter++;
+        return this.alphabet[(this.alphabet.indexOf(e) - this.alphabet.indexOf(key[counter % key.length]) + this.alphabet.length) % this.alphabet.length];
+      }
+       else {
+        return e;
+      }
+    }).join('');
+
+    if(!this.type) {
+      return decryptMessage.split('').reverse().join('')
+    } else {
+      return decryptMessage;
+    }
+  }
+
 }
 
 module.exports = {
